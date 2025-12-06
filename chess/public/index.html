@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>♟️ Chess Master - Play & Earn</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0088cc;
+            --secondary: #2ea6ff;
+            --success: #00b894;
+            --danger: #d63031;
+            --warning: #fdcb6e;
+            --dark: #2d3436;
+        }
+        
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        .app-container {
+            max-width: 100%;
+            min-height: 100vh;
+            background: white;
+            position: relative;
+        }
+        
+        /* Mobile Header */
+        .mobile-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .balance-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        /* Content */
+        .content {
+            padding: 15px;
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #666;
+            text-decoration: none;
+            padding: 5px 15px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(0, 136, 204, 0.1);
+        }
+        
+        .nav-icon {
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+        
+        .nav-text {
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        
+        /* Cards */
+        .card {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            padding: 15px;
+            font-weight: 600;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1em;
+            border: none;
+            transition: all 0.3s;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+        }
+        
+        .btn-success {
+            background: var(--success);
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+        }
+        
+        .btn-outline-primary {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            font-size: 1em;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.2);
+            outline: none;
+        }
+        
+        /* Game Modes */
+        .game-mode-card {
+            text-align: center;
+            padding: 25px 15px;
+            border-radius: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #eee;
+        }
+        
+        .game-mode-card:hover, .game-mode-card.active {
+            border-color: var(--primary);
+            background: rgba(0, 136, 204, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .game-mode-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        
+        /* Chess Board */
+        .chess-board-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            touch-action: manipulation;
+        }
+        
+        .chess-board {
+            width: 100%;
+            aspect-ratio: 1;
+            border: 3px solid var(--dark);
+            border-radius: 5px;
+            overflow: hidden;
+            user-select: none;
+        }
+        
+        .board-row {
+            display: flex;
+            height: 12.5%;
+        }
+        
+        .square {
+            width: 12.5%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .square.light {
+            background-color: #f0d9b5;
+        }
+        
+        .square.dark {
+            background-color: #b58863;
+        }
+        
+        .square.selected {
+            background-color: rgba(255, 255, 0, 0.5) !important;
+        }
+        
+        .square.legal-move {
+            background-color: rgba(0, 255, 0, 0.3) !important;
+        }
+        
+        .piece {
+            font-size: clamp(1.5em, 4vw, 2.2em);
+            user-select: none;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Game Controls */
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .game-controls .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 0.9em;
+        }
+        
+        /* Move History */
+        .move-history {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .move-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            z-index: 1000;
+            max-width: 90%;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(100px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            flex-direction: column;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 576px) {
+            .content {
+                padding: 12px;
+            }
+            
+            .btn {
+                padding: 12px 15px;
+            }
+            
+            .game-controls {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+        
+        /* Screen Management */
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Copy Button Fix */
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .copy-btn:active {
+            background: var(--secondary);
+        }
+        
+        /* Game ID Display */
+        .game-id-display {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        /* Share Buttons */
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .share-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay" style="display: none;">
+            <div class="spinner"></div>
+            <p id="loading-text" style="margin-top: 20px; color: var(--dark);">Loading...</p>
+        </div>
+        
+        <!-- Mobile Header -->
+        <div class="mobile-header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-chess"></i>
+                    <span>Chess Master</span>
+                </div>
+                <div id="balance-display" class="balance-badge">
+                    <i class="fas fa-coins"></i> <span id="balance-amount">0</span> birr
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screens -->
+        <div id="screens">
+            <!-- Login Screen -->
+            <div id="login-screen" class="screen active">
+                <div class="content">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div style="font-size: 3em; color: var(--primary); margin: 20px 0;">
+                                <i class="fas fa-chess-board"></i>
+                            </div>
+                            <h3>Welcome to Chess Master</h3>
+                            <p class="text-muted">Play chess & earn real money!</p>
+                            
+                            <div class="mt-4">
+                                <h5><i class="fas fa-gift"></i> Get 10 birr FREE</h5>
+                                <h5><i class="fas fa-trophy"></i> Win 10 birr per game</h5>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Login to Your Account</h5>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" id="login-email" class="form-control" placeholder="your@email.com">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Password</label>
+                                <input type="password" id="login-password" class="form-control" placeholder="••••••••">
+                            </div>
+                            
+                            <button class="btn btn-primary" onclick="login()">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </button>
+                            
+                            <button class="btn btn-outline-primary" onclick="showScreen('register-screen')">
+                                <i class="fas fa-user-plus"></i> Create New Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Register Screen -->
+            <div id="register-screen" class="screen">
+                <div class="content">
+                    <div class="card">
+                        <div class="card-header">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="showScreen('login-screen')">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <h4>Create Account</h4>
+                            <p class="text-muted">Register to get 10 birr bonus</p>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" id="register-email" class="form-control" placeholder="your@email.com">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Password</label>
+                                <input type="password" id="register-password" class="form-control" placeholder="••••••••">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Confirm Password</label>
+                                <input type="password" id="register-confirm" class="form-control" placeholder="••••••••">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">First Name (Optional)</label>
+                                <input type="text" id="register-firstname" class="form-control" placeholder="John">
+                            </div>
+                            
+                            <button class="btn btn-success" onclick="register()">
+                                <i class="fas fa-user-plus"></i> Create Account & Get 10 birr
+                            </button>
+                            
+                            <div class="mt-3">
+                                <small class="text-muted">
+                                    By registering, you agree to our Terms & Conditions
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Screen -->
+            <div id="dashboard-screen" class="screen">
+                <div class="content">
+                    <!-- Welcome Card -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h4>Hello, <span id="user-name">Player</span>! 👋</h4>
+                            <p>Ready to play chess and earn money?</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Game Modes -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Choose Game Mode</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="game-mode-card active" onclick="startGame('computer')">
+                                        <div class="game-mode-icon">
+                                            <i class="fas fa-robot"></i>
+                                        </div>
+                                        <h5>VS Computer</h5>
+                                        <small class="text-muted">Practice & have fun</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="game-mode-card" onclick="startGame('friend')">
+                                        <div class="game-mode-icon">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                        <h5>VS Friend</h5>
+                                        <small class="text-muted">Play & earn 10 birr</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Your Stats</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <h3 id="stats-games">0</h3>
+                                    <small class="text-muted">Games</small>
+                                </div>
+                                <div class="col-4">
+                                    <h3 id="stats-wins">0</h3>
+                                    <small class="text-muted">Wins</small>
+                                </div>
+                                <div class="col-4">
+                                    <h3 id="stats-earned">0</h3>
+                                    <small class="text-muted">Earned</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Games -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Recent Games</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="recent-games">
+                                <p class="text-muted text-center">No games yet. Start playing!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Game Setup Screen -->
+            <div id="game-setup-screen" class="screen">
+                <div class="content">
+                    <div class="card">
+                        <div class="card-header">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="backToDashboard()">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </button>
+                        </div>
+                        <div class="card-body text-center">
+                            <div id="setup-computer" style="display: none;">
+                                <div style="font-size: 3em; color: var(--primary); margin: 20px 0;">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <h4>Play vs Computer</h4>
+                                <p class="text-muted">Practice your skills against AI</p>
+                                
+                                <div class="mt-4">
+                                    <button class="btn btn-primary" onclick="createComputerGame()">
+                                        <i class="fas fa-play"></i> Start Game
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div id="setup-friend" style="display: none;">
+                                <div style="font-size: 3em; color: var(--success); margin: 20px 0;">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h4>Play vs Friend</h4>
+                                <p class="text-muted">Invite a friend to play & earn 10 birr</p>
+                                
+                                <div class="mt-4">
+                                    <button class="btn btn-success" onclick="createFriendGame()">
+                                        <i class="fas fa-plus"></i> Create Game
+                                    </button>
+                                    
+                                    <button class="btn btn-outline-primary mt-2" onclick="showJoinGame()">
+                                        <i class="fas fa-sign-in-alt"></i> Join Game
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Join Game Screen -->
+            <div id="join-game-screen" class="screen">
+                <div class="content">
+                    <div class="card">
+                        <div class="card-header">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="showScreen('game-setup-screen')">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <h4>Join Friend's Game</h4>
+                            <p class="text-muted">Enter the Game ID to join</p>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Game ID</label>
+                                <input type="text" id="join-game-id" class="form-control" placeholder="Enter Game ID">
+                            </div>
+                            
+                            <button class="btn btn-primary" onclick="joinGame()">
+                                <i class="fas fa-sign-in-alt"></i> Join Game
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Game Screen -->
+            <div id="game-screen" class="screen">
+                <div class="content">
+                    <!-- Game Info -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 id="game-mode">Chess Game</h5>
+                                    <span class="badge" id="game-status-badge">Waiting</span>
+                                </div>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="resignGame()">
+                                        <i class="fas fa-flag"></i> Resign
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Game ID Display -->
+                            <div id="game-id-section" style="display: none;">
+                                <div class="game-id-display">
+                                    Game ID: <span id="current-game-id">ABCD1234</span>
+                                </div>
+                                <div class="share-buttons">
+                                    <button class="btn btn-sm btn-outline-primary share-btn" onclick="copyGameId()">
+                                        <i class="fas fa-copy"></i> Copy ID
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success share-btn" onclick="shareGame()">
+                                        <i class="fas fa-share"></i> Share
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chess Board -->
+                    <div class="chess-board-container">
+                        <div class="chess-board" id="chess-board">
+                            <!-- Board will be generated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Turn Indicator -->
+                    <div class="card mt-3">
+                        <div class="card-body text-center">
+                            <h5 id="turn-indicator">Loading...</h5>
+                            <p id="game-message" class="text-muted mb-0"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Move History -->
+                    <div class="move-history">
+                        <h6>Move History</h6>
+                        <div id="moves-list"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Screen -->
+            <div id="profile-screen" class="screen">
+                <div class="content">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div style="width: 80px; height: 80px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2em; margin: 0 auto 20px;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h4 id="profile-name">Player Name</h4>
+                            <p class="text-muted" id="profile-email">user@email.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Account Details</h5>
+                            <div class="mb-3">
+                                <small class="text-muted">Member Since</small>
+                                <p id="profile-joined">Loading...</p>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted">Total Games</small>
+                                <p id="profile-total-games">0</p>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted">Win Rate</small>
+                                <p id="profile-win-rate">0%</p>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted">Total Earned</small>
+                                <p id="profile-total-earned">0 birr</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-outline-danger" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <a href="#" class="nav-item active" onclick="setActiveNav(this); showScreen('dashboard-screen')">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-text">Home</div>
+            </a>
+            <a href="#" class="nav-item" onclick="setActiveNav(this); showScreen('game-setup-screen')">
+                <div class="nav-icon">🎮</div>
+                <div class="nav-text">Play</div>
+            </a>
+            <a href="#" class="nav-item" onclick="setActiveNav(this); showProfile()">
+                <div class="nav-icon">👤</div>
+                <div class="nav-text">Profile</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let currentGame = null;
+        let chess = null;
+        let selectedSquare = null;
+        let legalMoves = [];
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check if user is logged in
+            const token = localStorage.getItem('chess_token');
+            if (token) {
+                try {
+                    const userData = JSON.parse(atob(token.split('.')[1]));
+                    await loadUserProfile(userData.userId);
+                } catch (error) {
+                    localStorage.removeItem('chess_token');
+                    showScreen('login-screen');
+                }
+            }
+            
+            // Setup event listeners
+            setupEventListeners();
+        });
+        
+        function setupEventListeners() {
+            // Form submit on enter
+            document.getElementById('login-email').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') login();
+            });
+            document.getElementById('login-password').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') login();
+            });
+            
+            // Copy button fix
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('copy-btn') || 
+                    e.target.closest('.copy-btn')) {
+                    e.preventDefault();
+                    const btn = e.target.closest('.copy-btn');
+                    if (btn.dataset.copy) {
+                        copyToClipboard(btn.dataset.copy);
+                    }
+                }
+            });
+        }
+        
+        // Auth functions
+        async function login() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                showToast('Please enter email and password');
+                return;
+            }
+            
+            showLoading('Logging in...');
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Store token
+                    const token = btoa(JSON.stringify({
+                        userId: result.user.id,
+                        email: result.user.email,
+                        timestamp: Date.now()
+                    }));
+                    localStorage.setItem('chess_token', token);
+                    
+                    currentUser = result.user;
+                    updateUI();
+                    showScreen('dashboard-screen');
+                    setActiveNav(document.querySelector('.bottom-nav .nav-item'));
+                    showToast('Welcome back!');
+                } else {
+                    showToast(result.error || 'Login failed');
+                }
+            } catch (error) {
+                showToast('Connection error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        async function register() {
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            const firstName = document.getElementById('register-firstname').value.trim();
+            
+            if (!email || !password) {
+                showToast('Please enter email and password');
+                return;
+            }
+            
+            if (password !== confirm) {
+                showToast('Passwords do not match');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters');
+                return;
+            }
+            
+            showLoading('Creating account...');
+            
+            try {
+                // Get Telegram user ID from URL if available
+                const urlParams = new URLSearchParams(window.location.search);
+                const telegramId = urlParams.get('start');
+                
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                        firstName,
+                        telegramId
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Auto login
+                    const token = btoa(JSON.stringify({
+                        userId: result.user.id,
+                        email: result.user.email,
+                        timestamp: Date.now()
+                    }));
+                    localStorage.setItem('chess_token', token);
+                    
+                    currentUser = result.user;
+                    updateUI();
+                    showScreen('dashboard-screen');
+                    setActiveNav(document.querySelector('.bottom-nav .nav-item'));
+                    showToast('🎉 Account created! You got 10 birr bonus!');
+                } else {
+                    showToast(result.error || 'Registration failed');
+                }
+            } catch (error) {
+                showToast('Connection error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('chess_token');
+            currentUser = null;
+            showScreen('login-screen');
+            showToast('Logged out');
+        }
+        
+        // Game functions
+        function startGame(mode) {
+            // Update active game mode card
+            document.querySelectorAll('.game-mode-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.target.closest('.game-mode-card').classList.add('active');
+            
+            if (mode === 'computer') {
+                document.getElementById('setup-computer').style.display = 'block';
+                document.getElementById('setup-friend').style.display = 'none';
+            } else {
+                document.getElementById('setup-computer').style.display = 'none';
+                document.getElementById('setup-friend').style.display = 'block';
+            }
+            
+            showScreen('game-setup-screen');
+        }
+        
+        async function createComputerGame() {
+            if (!currentUser) return;
+            
+            showLoading('Creating game...');
+            
+            try {
+                const response = await fetch('/api/game', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        playerId: currentUser.id,
+                        gameType: 'computer'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentGame = result.game;
+                    startGameSession();
+                } else {
+                    showToast(result.error || 'Failed to create game');
+                }
+            } catch (error) {
+                showToast('Connection error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        async function createFriendGame() {
+            if (!currentUser) return;
+            
+            showLoading('Creating game...');
+            
+            try {
+                const response = await fetch('/api/game', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        playerId: currentUser.id,
+                        gameType: 'friend'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentGame = result.game;
+                    document.getElementById('game-id-section').style.display = 'block';
+                    document.getElementById('current-game-id').textContent = currentGame.id.substring(0, 8).toUpperCase();
+                    startGameSession();
+                } else {
+                    showToast(result.error || 'Failed to create game');
+                }
+            } catch (error) {
+                showToast('Connection error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        function showJoinGame() {
+            showScreen('join-game-screen');
+        }
+        
+        async function joinGame() {
+            const gameId = document.getElementById('join-game-id').value.trim();
+            
+            if (!gameId) {
+                showToast('Please enter Game ID');
+                return;
+            }
+            
+            showLoading('Joining game...');
+            
+            try {
+                const response = await fetch(`/api/game/${gameId}/join`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ playerId: currentUser.id })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentGame = result.game;
+                    startGameSession();
+                } else {
+                    showToast(result.error || 'Cannot join game');
+                }
+            } catch (error) {
+                showToast('Connection error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        function startGameSession() {
+            showScreen('game-screen');
+            
+            // Update game info
+            if (currentGame.vs_computer) {
+                document.getElementById('game-mode').textContent = 'VS Computer';
+                document.getElementById('game-id-section').style.display = 'none';
+            } else {
+                document.getElementById('game-mode').textContent = 'VS Friend';
+                document.getElementById('game-id-section').style.display = 'block';
+            }
+            
+            // Initialize chess.js
+            chess = new Chess(currentGame.fen);
+            
+            // Generate board
+            generateChessBoard();
+            
+            // Update game UI
+            updateGameUI();
+            
+            // Start polling for updates
+            startGamePolling();
+        }
+        
+        function generateChessBoard() {
+            const board = document.getElementById('chess-board');
+            board.innerHTML = '';
+            
+            // Determine orientation (player is white)
+            const isWhite = currentGame.player1 === currentUser.id;
+            
+            for (let row = 0; row < 8; row++) {
+                const boardRow = document.createElement('div');
+                boardRow.className = 'board-row';
+                
+                for (let col = 0; col < 8; col++) {
+                    const square = document.createElement('div');
+                    const displayRow = isWhite ? 7 - row : row;
+                    const displayCol = isWhite ? col : 7 - col;
+                    
+                    const isLight = (displayRow + displayCol) % 2 === 0;
+                    square.className = `square ${isLight ? 'light' : 'dark'}`;
+                    square.dataset.row = displayRow;
+                    square.dataset.col = displayCol;
+                    
+                    // Get piece
+                    const file = 'abcdefgh'[displayCol];
+                    const rank = displayRow + 1;
+                    const squareName = file + rank;
+                    const piece = chess.get(squareName);
+                    
+                    if (piece) {
+                        const pieceDiv = document.createElement('div');
+                        pieceDiv.className = 'piece';
+                        pieceDiv.textContent = getPieceSymbol(piece);
+                        pieceDiv.style.color = piece.color === 'w' ? '#fff' : '#000';
+                        pieceDiv.style.textShadow = piece.color === 'w' ? '1px 1px 2px #000' : '1px 1px 2px #fff';
+                        square.appendChild(pieceDiv);
+                    }
+                    
+                    // Add click handler
+                    square.addEventListener('click', () => handleSquareClick(squareName));
+                    boardRow.appendChild(square);
+                }
+                board.appendChild(boardRow);
+            }
+        }
+        
+        function getPieceSymbol(piece) {
+            const symbols = {
+                'p': '♟', 'n': '♞', 'b': '♝', 'r': '♜', 'q': '♛', 'k': '♚',
+                'P': '♙', 'N': '♘', 'B': '♗', 'R': '♖', 'Q': '♕', 'K': '♔'
+            };
+            return symbols[piece.type] || '?';
+        }
+        
+        async function handleSquareClick(squareName) {
+            if (!currentGame || currentGame.status !== 'active') return;
+            
+            // Check if it's player's turn
+            const isPlayerTurn = currentGame.current_player === currentUser.id;
+            if (!isPlayerTurn && !currentGame.vs_computer) {
+                showToast("Wait for opponent's turn");
+                return;
+            }
+            
+            if (selectedSquare) {
+                // Try to make move
+                try {
+                    const move = { from: selectedSquare, to: squareName };
+                    
+                    showLoading('Making move...');
+                    
+                    const response = await fetch(`/api/game/${currentGame.id}/move`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            playerId: currentUser.id,
+                            move: move
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    hideLoading();
+                    
+                    if (result.success) {
+                        currentGame = result.game;
+                        chess = new Chess(currentGame.fen);
+                        updateGameUI();
+                        generateChessBoard();
+                        
+                        if (result.is_game_over) {
+                            gameFinished();
+                        }
+                    } else {
+                        showToast(result.error || 'Invalid move');
+                        selectedSquare = null;
+                        clearSelection();
+                    }
+                } catch (error) {
+                    hideLoading();
+                    showToast('Error making move');
+                }
+            } else {
+                // Select piece
+                const piece = chess.get(squareName);
+                if (piece) {
+                    // Check if piece belongs to current player
+                    const isWhite = piece.color === 'w';
+                    const isPlayerWhite = currentGame.player1 === currentUser.id;
+                    
+                    if ((isWhite && isPlayerWhite) || (!isWhite && !isPlayerWhite)) {
+                        selectedSquare = squareName;
+                        highlightSquare(squareName);
+                        showLegalMoves(squareName);
+                    }
+                }
+            }
+        }
+        
+        function highlightSquare(squareName) {
+            clearSelection();
+            
+            // Find and highlight the square
+            const squares = document.querySelectorAll('.square');
+            squares.forEach(square => {
+                const row = parseInt(square.dataset.row);
+                const col = parseInt(square.dataset.col);
+                const file = 'abcdefgh'[col];
+                const rank = row + 1;
+                const currentSquareName = file + rank;
+                
+                if (currentSquareName === squareName) {
+                    square.classList.add('selected');
+                }
+            });
+        }
+        
+        function showLegalMoves(squareName) {
+            const moves = chess.moves({ square: squareName, verbose: true });
+            legalMoves = moves.map(move => move.to);
+            
+            const squares = document.querySelectorAll('.square');
+            squares.forEach(square => {
+                const row = parseInt(square.dataset.row);
+                const col = parseInt(square.dataset.col);
+                const file = 'abcdefgh'[col];
+                const rank = row + 1;
+                const currentSquareName = file + rank;
+                
+                if (legalMoves.includes(currentSquareName)) {
+                    square.classList.add('legal-move');
+                }
+            });
+        }
+        
+        function clearSelection() {
+            document.querySelectorAll('.square').forEach(square => {
+                square.classList.remove('selected', 'legal-move');
+            });
+            selectedSquare = null;
+            legalMoves = [];
+        }
+        
+        function updateGameUI() {
+            if (!currentGame) return;
+            
+            // Update status badge
+            const statusBadge = document.getElementById('game-status-badge');
+            let statusText = '';
+            let statusColor = '';
+            
+            switch (currentGame.status) {
+                case 'waiting':
+                    statusText = 'Waiting for opponent';
+                    statusColor = 'bg-warning';
+                    break;
+                case 'active':
+                    statusText = 'Game active';
+                    statusColor = 'bg-success';
+                    break;
+                case 'finished':
+                    statusText = 'Game finished';
+                    statusColor = 'bg-secondary';
+                    break;
+            }
+            
+            statusBadge.textContent = statusText;
+            statusBadge.className = `badge ${statusColor}`;
+            
+            // Update turn indicator
+            const turnIndicator = document.getElementById('turn-indicator');
+            const gameMessage = document.getElementById('game-message');
+            
+            if (currentGame.status === 'finished') {
+                if (currentGame.winner === currentUser.id) {
+                    turnIndicator.textContent = '🎉 You Won!';
+                    gameMessage.textContent = currentGame.vs_computer ? 
+                        'Great game against computer!' : 
+                        `You earned ${WIN_REWARD} birr!`;
+                } else if (currentGame.winner) {
+                    turnIndicator.textContent = '😞 You Lost';
+                    gameMessage.textContent = 'Better luck next time!';
+                } else {
+                    turnIndicator.textContent = '🤝 Draw';
+                    gameMessage.textContent = 'The game ended in a draw';
+                }
+            } else {
+                const isMyTurn = currentGame.current_player === currentUser.id;
+                turnIndicator.textContent = isMyTurn ? '🎮 Your Turn' : '⏳ Waiting...';
+                gameMessage.textContent = isMyTurn ? 
+                    'Make your move' : 
+                    (currentGame.vs_computer ? 'Computer thinking...' : 'Opponent\'s turn');
+            }
+            
+            // Update move history
+            updateMoveHistory();
+        }
+        
+        function updateMoveHistory() {
+            const movesList = document.getElementById('moves-list');
+            movesList.innerHTML = '';
+            
+            if (!currentGame.moves || currentGame.moves.length === 0) {
+                movesList.innerHTML = '<p class="text-muted text-center">No moves yet</p>';
+                return;
+            }
+            
+            currentGame.moves.slice(-10).forEach((move, index) => {
+                const moveDiv = document.createElement('div');
+                moveDiv.className = 'move-item';
+                
+                const moveNumber = Math.floor(index / 2) + 1;
+                const isWhiteMove = index % 2 === 0;
+                
+                if (isWhiteMove) {
+                    moveDiv.innerHTML = `
+                        <span><strong>${moveNumber}.</strong> ${move.san || move.move.from}-${move.move.to}</span>
+                        <small class="text-muted">${new Date(move.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
+                    `;
+                } else {
+                    moveDiv.innerHTML = `
+                        <span>${move.san || move.move.from}-${move.move.to}</span>
+                        <small class="text-muted">${new Date(move.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
+                    `;
+                }
+                
+                movesList.appendChild(moveDiv);
+            });
+            
+            // Scroll to bottom
+            movesList.scrollTop = movesList.scrollHeight;
+        }
+        
+        function startGamePolling() {
+            if (window.gamePollInterval) clearInterval(window.gamePollInterval);
+            
+            window.gamePollInterval = setInterval(async () => {
+                if (!currentGame || currentGame.status === 'finished') {
+                    clearInterval(window.gamePollInterval);
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`/api/game/${currentGame.id}`);
+                    if (response.ok) {
+                        const result = await response.json();
+                        if (result.success && result.game) {
+                            const updatedGame = result.game;
+                            
+                            if (updatedGame.last_move_at !== currentGame.last_move_at) {
+                                currentGame = updatedGame;
+                                chess = new Chess(currentGame.fen);
+                                updateGameUI();
+                                generateChessBoard();
+                                
+                                if (currentGame.status === 'finished') {
+                                    clearInterval(window.gamePollInterval);
+                                    gameFinished();
+                                }
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Polling error:', error);
+                }
+            }, 2000);
+        }
+        
+        function gameFinished() {
+            updateGameUI();
+            
+            // Update user data
+            loadUserProfile(currentUser.id);
+            
+            // Show result for 3 seconds then go back
+            setTimeout(() => {
+                backToDashboard();
+            }, 3000);
+        }
+        
+        async function resignGame() {
+            if (!confirm('Are you sure you want to resign?')) return;
+            
+            showToast('Game resigned');
+            setTimeout(() => backToDashboard(), 1000);
+        }
+        
+        function backToDashboard() {
+            showScreen('dashboard-screen');
+            setActiveNav(document.querySelector('.bottom-nav .nav-item'));
+            if (currentUser) {
+                loadUserProfile(currentUser.id);
+            }
+        }
+        
+        // Copy functions (FIXED)
+        function copyGameId() {
+            if (currentGame) {
+                copyToClipboard(currentGame.id);
+                showToast('Game ID copied!');
+            }
+        }
+        
+        function copyToClipboard(text) {
+            // Modern clipboard API
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text)
+                    .then(() => showToast('Copied!'))
+                    .catch(() => fallbackCopy(text));
+            } else {
+                fallbackCopy(text);
+            }
+        }
+        
+        function fallbackCopy(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            textArea.setSelectionRange(0, 99999); // For mobile
+            
+            try {
+                document.execCommand('copy');
+                showToast('Copied!');
+            } catch (err) {
+                showToast('Failed to copy');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        function shareGame() {
+            if (currentGame) {
+                const gameUrl = `${window.location.origin}?game=${currentGame.id}`;
+                const text = `Play chess with me! Game ID: ${currentGame.id.substring(0, 8).toUpperCase()}\n\n${gameUrl}`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Chess Game',
+                        text: text,
+                        url: gameUrl
+                    });
+                } else {
+                    copyToClipboard(text);
+                    showToast('Game info copied! Share it with your friend');
+                }
+            }
+        }
+        
+        // Profile functions
+        async function loadUserProfile(userId) {
+            try {
+                const response = await fetch(`/api/user/${userId}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentUser = result.user;
+                    updateUI();
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+        
+        function updateUI() {
+            if (!currentUser) return;
+            
+            // Update header
+            document.getElementById('balance-amount').textContent = currentUser.balance;
+            document.getElementById('user-name').textContent = currentUser.first_name || currentUser.username;
+            
+            // Update dashboard stats
+            document.getElementById('stats-games').textContent = currentUser.games_played;
+            document.getElementById('stats-wins').textContent = currentUser.games_won;
+            document.getElementById('stats-earned').textContent = currentUser.total_earned + ' birr';
+            
+            // Update profile screen
+            document.getElementById('profile-name').textContent = currentUser.first_name || currentUser.username;
+            document.getElementById('profile-email').textContent = currentUser.email;
+            document.getElementById('profile-joined').textContent = new Date(currentUser.created_at).toLocaleDateString();
+            document.getElementById('profile-total-games').textContent = currentUser.games_played;
+            
+            const winRate = currentUser.games_played > 0 ? 
+                Math.round((currentUser.games_won / currentUser.games_played) * 100) : 0;
+            document.getElementById('profile-win-rate').textContent = winRate + '%';
+            document.getElementById('profile-total-earned').textContent = currentUser.total_earned + ' birr';
+        }
+        
+        function showProfile() {
+            updateUI();
+            showScreen('profile-screen');
+        }
+        
+        // UI helpers
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+        
+        function setActiveNav(navItem) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            navItem.classList.add('active');
+        }
+        
+        function showLoading(message = 'Loading...') {
+            document.getElementById('loading-text').textContent = message;
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+        
+        function showToast(message) {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) existingToast.remove();
+            
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+        
+        // Initialize chess.js
+        window.Chess = Chess;
+    </script>
+    
+    <!-- Include chess.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chess.js@1.0.0-beta.7/dist/chess.min.js"></script>
+</body>
+</html>
